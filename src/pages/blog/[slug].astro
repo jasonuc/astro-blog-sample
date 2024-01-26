@@ -1,12 +1,14 @@
 ---
 import type { GetStaticPaths } from "astro";
-import { getCollection, type CollectionEntry } from "astro:content";
+import { getCollection, type CollectionEntry, getEntryBySlug } from "astro:content";
 import { Image } from "astro:assets";
 
 import H1 from "../../components/H1.astro";
 import Main from "../../components/Main.astro";
 import Layout from "../../layouts/Layout.astro";
 
+/* 
+SSG
 export const getStaticPaths = (async () => {
   const posts = await getCollection("posts");
 
@@ -25,6 +27,18 @@ interface Props {
 }
 
 const { post } = Astro.props;
+const { Content } = await post.render();
+*/ 
+
+//SSR
+const { slug } = Astro.params;
+
+const post = await getEntryBySlug("posts", slug as string);
+
+if (!post) {
+    return Astro.redirect("/404");
+}
+
 const { Content } = await post.render();
 ---
 
